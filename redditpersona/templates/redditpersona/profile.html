@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reddit User Data Fetcher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #6a11cb 100%);
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.85);
+            box-shadow: 0 2px 12px 0 rgba(31, 38, 135, 0.10);
+            padding: 1.2rem 0 1.2rem 0;
+            margin-bottom: 2rem;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .header-icon {
+            width: 48px;
+            height: 48px;
+        }
+        .header-title {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: #6a11cb;
+            letter-spacing: 1px;
+        }
+        .main-card {
+            background: rgba(255,255,255,0.85);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            padding: 2.5rem 2rem 2rem 2rem;
+            margin: 0 auto 2.5rem auto;
+            max-width: 900px;
+            backdrop-filter: blur(8px);
+        }
+        .form-label {
+            font-weight: 600;
+            color: #6a11cb;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(106,17,203,0.12);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .btn-persona {
+            background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+            border: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-left: 1rem;
+        }
+        .btn-persona:hover {
+            background: linear-gradient(90deg, #dd2476 0%, #ff512f 100%);
+            color: #fff;
+        }
+        .section-title {
+            color: #232526;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .card-post, .card-comment {
+            background: linear-gradient(120deg, #f8fafc 0%, #e9eafc 100%);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(106,17,203,0.10);
+            margin-bottom: 1.5rem;
+            padding: 1.3rem 1.7rem;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card-post:hover, .card-comment:hover {
+            box-shadow: 0 8px 32px rgba(37,117,252,0.18);
+            transform: translateY(-2px) scale(1.01);
+        }
+        .persona-card {
+            background: linear-gradient(120deg, #fffbe6 0%, #ffe6fa 100%);
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(255,81,47,0.10);
+            margin-bottom: 2rem;
+            padding: 2rem 2.5rem;
+            font-family: 'Montserrat', Arial, sans-serif;
+            color: #232526;
+            font-size: 1.08rem;
+            white-space: pre-line;
+        }
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6a11cb;
+        }
+        .post-meta, .comment-meta {
+            font-size: 0.97rem;
+            color: #7b7b7b;
+            margin-bottom: 0.5rem;
+        }
+        .post-body, .comment-body {
+            color: #232526;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+        .view-link {
+            color: #2575fc;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .view-link:hover {
+            color: #6a11cb;
+            text-decoration: underline;
+        }
+        .alert-danger {
+            font-weight: 500;
+        }
+        @media (max-width: 900px) {
+            .main-card {
+                padding: 1.2rem 0.5rem;
+            }
+            .header-title {
+                font-size: 1.3rem;
+            }
+            .persona-card {
+                padding: 1rem 0.5rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .main-card {
+                padding: 0.7rem 0.2rem;
+            }
+            .header-content {
+                gap: 0.5rem;
+            }
+            .header-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sticky-header">
+        <div class="header-content">
+            <img src="https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-180x180.png" class="header-icon" alt="Reddit Icon">
+            <span class="header-title">Reddit User Data Fetcher</span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="main-card">
+            <form method="post" class="mb-4 mt-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.profile_url.label_tag }}
+                    <input type="text" name="profile_url" class="form-control" id="id_profile_url" maxlength="200" value="{{ form.profile_url.value|default_if_none:'' }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Fetch Data</button>
+                {% if posts and comments %}
+                    <button type="submit" name="generate_persona" value="1" class="btn btn-persona">Generate Ai-Based Persona</button>
+                {% endif %}
+            </form>
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            {% if persona %}
+                <div class="persona-card" style="margin-top:50px;">
+                    <div class="row mb-4">
+                        <div class="col-12 d-flex flex-column align-items-center justify-content-center">
+                            <img src="{{ persona.photo_url }}" alt="Persona Photo" class="rounded-circle mb-3" style="width: 170px; height: 170px; object-fit: cover; border: 4px solid #ff512f;">
+                            <div class="p-3 text-center" style="background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%); color: #fff; border-radius: 12px; font-size: 1.1rem; font-style: italic; font-weight: 500;">
+                                “{{ persona.quote }}”
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- All the rest of the persona details (name, age, etc.) go here, as before -->
+                        <div class="col-12">
+                            <div class="d-flex align-items-center mb-2">
+                                <h2 style="color:#ff512f;font-family:'Montserrat',Arial,sans-serif;font-weight:700;margin-bottom:0;">{{ persona.name }}</h2>
+                            </div>
+                            <div class="row mb-2" style="font-size:1.05rem;">
+                                <div class="col-6">
+                                    <strong>AGE</strong>: {{ persona.age }}<br>
+                                    <strong>OCCUPATION</strong>: {{ persona.occupation }}<br>
+                                    <strong>STATUS</strong>: {{ persona.status }}<br>
+                                </div>
+                                <div class="col-6">
+                                    <strong>LOCATION</strong>: {{ persona.location }}<br>
+                                    <strong>TIER</strong>: {{ persona.tier }}<br>
+                                    <strong>ARCHETYPE</strong>: {{ persona.archetype }}<br>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                {% for trait in persona.traits %}
+                                    <span class="badge bg-warning text-dark me-1 mb-1" style="font-size:1rem;font-weight:500;">{{ trait }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">MOTIVATIONS</div>
+                                    {% for key, value in persona.motivations.items %}
+                                        <div class="d-flex align-items-center mb-1">
+                                            <span style="min-width:110px;">{{ key|upper }}</span>
+                                            <div style="flex:1; background:#ffe6d1; border-radius:6px; margin:0 8px; height:14px;">
+                                                <div style="background:linear-gradient(90deg,#ff512f,#dd2476); height:14px; border-radius:6px; width:{{ value }}%;"></div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-6">
+                                    <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">PERSONALITY</div>
+                                    {% for key, value in persona.personality.items %}
+                                        <div class="d-flex align-items-center mb-1">
+                                            <span style="min-width:110px;">{{ key }}</span>
+                                            <div style="flex:1; background:#e6e6ff; border-radius:6px; margin:0 8px; height:14px;">
+                                                <div style="background:linear-gradient(90deg,#ff512f,#6a11cb); height:14px; border-radius:6px; width:{{ value }}%;"></div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 col-md-6">
+                                    <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">BEHAVIOUR & HABITS</div>
+                                    <ul style="margin-bottom:0;">
+                                        {% for item in persona.behaviour_habits %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">FRUSTRATIONS</div>
+                                    <ul style="margin-bottom:0;">
+                                        {% for item in persona.frustrations %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">GOALS & NEEDS</div>
+                                    <ul style="margin-bottom:0;">
+                                        {% for item in persona.goals_needs %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if posts %}
+                <div class="section-title">Posts</div>
+                {% for post in posts %}
+                    <div class="card-post">
+                        <div class="post-title">{{ post.title }}</div>
+                        <div class="post-meta">Subreddit: {{ post.subreddit }}</div>
+                        <div class="post-body">{{ post.selftext|linebreaksbr }}</div>
+                        <a href="{{ post.permalink }}" class="view-link" target="_blank">View Post</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if comments %}
+                <div class="section-title">Comments</div>
+                {% for comment in comments %}
+                    <div class="card-comment">
+                        <div class="comment-meta">Subreddit: {{ comment.subreddit }}</div>
+                        <div class="comment-body">{{ comment.body|linebreaksbr }}</div>
+                        <a href="{{ comment.permalink }}" class="view-link" target="_blank">View Comment</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 
