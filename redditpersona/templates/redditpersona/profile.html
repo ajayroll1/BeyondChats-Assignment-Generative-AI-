@@ -216,10 +216,16 @@
                                 <div class="col-6">
                                     <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">MOTIVATIONS</div>
                                     {% for key, value in persona.motivations.items %}
-                                        <div class="d-flex align-items-center mb-1">
+                                        <div class="d-flex align-items-center mb-2">
                                             <span style="min-width:110px;">{{ key|upper }}</span>
-                                            <div style="flex:1; background:#ffe6d1; border-radius:6px; margin:0 8px; height:14px;">
-                                                <div style="background:linear-gradient(90deg,#ff512f,#dd2476); height:14px; border-radius:6px; width:{{ value }}%;"></div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <div class="progress" style="height: 22px; background: #ffe6d1;">
+                                                    <div class="progress-bar" role="progressbar"
+                                                         style="width: {{ value }}%; background: linear-gradient(90deg,#ff512f,#dd2476); font-weight:600; color:#000;"
+                                                         aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="100">
+                                                        {{ value|floatformat:0 }}%
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     {% endfor %}
@@ -227,10 +233,16 @@
                                 <div class="col-6">
                                     <div style="color:#ff512f;font-weight:700;letter-spacing:1px;">PERSONALITY</div>
                                     {% for key, value in persona.personality.items %}
-                                        <div class="d-flex align-items-center mb-1">
+                                        <div class="d-flex align-items-center mb-2">
                                             <span style="min-width:110px;">{{ key }}</span>
-                                            <div style="flex:1; background:#e6e6ff; border-radius:6px; margin:0 8px; height:14px;">
-                                                <div style="background:linear-gradient(90deg,#ff512f,#6a11cb); height:14px; border-radius:6px; width:{{ value }}%;"></div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <div class="progress" style="height: 22px; background: #e6e6ff;">
+                                                    <div class="progress-bar" role="progressbar"
+                                                         style="width: {{ value }}%; background: linear-gradient(90deg,#ff512f,#6a11cb); font-weight:600; color:#000;"
+                                                         aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="100">
+                                                        {{ value|floatformat:0 }}%
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     {% endfor %}
