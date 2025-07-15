@@ -180,6 +180,48 @@
                 <div class="alert alert-danger">{{ error }}</div>
             {% endif %}
             {% if persona %}
+                {{ persona|json_script:"personaData" }}
+                <div class="d-flex justify-content-end mb-3">
+                    <button id="downloadPersonaTxtBtn" class="btn btn-success" style="font-weight:600;">
+                        Download Persona (TXT)
+                    </button>
+                </div>
+                <script>
+                    document.getElementById('downloadPersonaTxtBtn').onclick = function() {
+                        const persona = JSON.parse(document.getElementById('personaData').textContent);
+                        let txt = '';
+                        txt += `Name: ${persona.name}\n`;
+                        txt += `Age: ${persona.age}\n`;
+                        txt += `Occupation: ${persona.occupation}\n`;
+                        txt += `Status: ${persona.status}\n`;
+                        txt += `Location: ${persona.location}\n`;
+                        txt += `Tier: ${persona.tier}\n`;
+                        txt += `Archetype: ${persona.archetype}\n`;
+                        txt += `\nTraits: ${persona.traits ? persona.traits.join(', ') : ''}\n`;
+                        txt += `\nMotivations:\n`;
+                        for (const [k, v] of Object.entries(persona.motivations || {})) {
+                            txt += `  - ${k}: ${v}%\n`;
+                        }
+                        txt += `\nPersonality:\n`;
+                        for (const [k, v] of Object.entries(persona.personality || {})) {
+                            txt += `  - ${k}: ${v}%\n`;
+                        }
+                        txt += `\nBehaviour & Habits:\n`;
+                        (persona.behaviour_habits || []).forEach(item => txt += `  - ${item}\n`);
+                        txt += `\nFrustrations:\n`;
+                        (persona.frustrations || []).forEach(item => txt += `  - ${item}\n`);
+                        txt += `\nGoals & Needs:\n`;
+                        (persona.goals_needs || []).forEach(item => txt += `  - ${item}\n`);
+                        txt += `\nQuote: \"${persona.quote}\"\n`;
+                        const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(txt);
+                        const dlAnchor = document.createElement('a');
+                        dlAnchor.setAttribute("href", dataStr);
+                        dlAnchor.setAttribute("download", "persona.txt");
+                        document.body.appendChild(dlAnchor);
+                        dlAnchor.click();
+                        dlAnchor.remove();
+                    };
+                </script>
                 <div class="persona-card" style="margin-top:50px;">
                     <div class="row mb-4">
                         <div class="col-12 d-flex flex-column align-items-center justify-content-center">
