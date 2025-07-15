@@ -1,6 +1,6 @@
 # Reddit User Persona Generator
 
-## 🛠️ Project Setup & Run Instructions
+#Project Setup & Run Instructions
 
  1. Clone the Repository
 ```bash
