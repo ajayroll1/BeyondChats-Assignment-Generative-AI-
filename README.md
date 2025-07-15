@@ -23,7 +23,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
- 4. (Optional) Set Up API Keys
+ 4.  Set Up API Keys
 - For OpenAI persona generation, set your API key:
   ```bash
   set OPENAI_API_KEY=your_openai_api_key  # On Windows
